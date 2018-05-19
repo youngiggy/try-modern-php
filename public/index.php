@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-use DI;
 use ExampleApp\HelloWorld;
 use Relay\Relay;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\Response;
 use FastRoute\RouteCollector;
 use Middlewares\FastRoute;
 use Middlewares\RequestHandler;
@@ -19,8 +19,11 @@ $containerBuilder->useAnnotations(false);
 $containerBuilder->addDefinitions([
     \ExampleApp\HelloWorld::class =>
         DI\create(\ExampleApp\HelloWorld::class)
-            ->constructor(DI\get('Foo')),
+            ->constructor(DI\get('Foo'), DI\get('Response')),
     'Foo' => 'bar',
+    'Response' => function() {
+        return new Response();
+    },
 ]);
 $container = $containerBuilder->build();
 
