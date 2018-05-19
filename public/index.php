@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+use DI;
 use ExampleApp\HelloWorld;
 use Relay\Relay;
 use Zend\Diactoros\ServerRequestFactory;
@@ -16,7 +17,10 @@ $containerBuilder = new \DI\ContainerBuilder();
 $containerBuilder->useAutowiring(false);
 $containerBuilder->useAnnotations(false);
 $containerBuilder->addDefinitions([
-    \ExampleApp\HelloWorld::class => \DI\create(\ExampleApp\HelloWorld::class)
+    \ExampleApp\HelloWorld::class =>
+        DI\create(\ExampleApp\HelloWorld::class)
+            ->constructor(DI\get('Foo')),
+    'Foo' => 'bar',
 ]);
 $container = $containerBuilder->build();
 
@@ -28,7 +32,7 @@ $routes = simpleDispatcher(function (RouteCollector $r) {
 });
 
 $middlewareQueue[] = new FastRoute($routes);
-$middlewareQueue[] = new RequestHandler();
+$middlewareQueue[] = new RequestHandler($container);
 
 $requestHandler = new Relay($middlewareQueue);
 $requestHandler->handle(ServerRequestFactory::fromGlobals());
