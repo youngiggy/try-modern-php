@@ -220,6 +220,8 @@ $helloWorld->announce();
 
 저 소스를 보면 HelloWorld 클래스를 바로 new 해서 인스턴스를 생성하죠?
 
+HelloWorld 클래스는 index.php가 아닌 다른 곳에서도 쓰일 수 있지만,
+
 index.php는 HelloWorld가 없이는 살아갈 수 없습니다.
 
 이런 상황을 `index.php가 HelloWorld 클래스에 의존하고 있다`라고 합니다.
